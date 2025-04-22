@@ -30,7 +30,11 @@ namespace SecureAuth.API.Controllers
                 return BadRequest(response.ErrorMessage);
             }
 
-            return Ok(response);
+            // Modified response to not include token information
+            return Ok(new
+            {
+                message = "Kayıt başarılı! Lütfen giriş yapınız.",
+            });
         }
 
         [HttpPost("login")]
@@ -59,7 +63,7 @@ namespace SecureAuth.API.Controllers
         }
 
         // Kullanıcının tüm refresh token'larını iptal etme endpoint'i
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost("revoke-all-tokens")]
         public async Task<ActionResult> RevokeAllTokens()
         {
@@ -76,6 +80,26 @@ namespace SecureAuth.API.Controllers
             }
 
             return Ok("Tüm oturumlar başarıyla sonlandırıldı.");
+        }
+
+        //Kullanıcının sadece kendi oturumunu kapatma endpoint'i
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<ActionResult> Logout()
+        {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
+
+            var result = await _authService.RevokeAllUserRefreshTokens(userId);
+            if (!result)
+            {
+                return BadRequest("Oturum kapatma işlemi sırasında bir hata oluştu.");
+            }
+
+            return Ok("Oturumunuz başarıyla kapatıldı.");
         }
 
         [Authorize]

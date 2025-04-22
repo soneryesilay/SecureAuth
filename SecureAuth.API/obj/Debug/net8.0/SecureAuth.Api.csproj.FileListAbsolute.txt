@@ -440,3 +440,4 @@ C:\Users\soner\OneDrive\Desktop\SecureAuth\SecureAuth.API\obj\Debug\net8.0\refin
 C:\Users\soner\OneDrive\Desktop\SecureAuth\SecureAuth.API\obj\Debug\net8.0\SecureAuth.API.pdb
 C:\Users\soner\OneDrive\Desktop\SecureAuth\SecureAuth.API\obj\Debug\net8.0\SecureAuth.API.genruntimeconfig.cache
 C:\Users\soner\OneDrive\Desktop\SecureAuth\SecureAuth.API\obj\Debug\net8.0\ref\SecureAuth.API.dll
+C:\Users\soner\OneDrive\Desktop\SecureAuth\SecureAuth.API\obj\Debug\net8.0\SecureAuth.API.sourcelink.json
