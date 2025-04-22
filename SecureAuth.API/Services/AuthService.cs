@@ -223,32 +223,6 @@ public class AuthService : IAuthService
         }
     }
 
-    // Belirli bir refresh token'ı iptal etme
-    public async Task<bool> RevokeRefreshToken(string refreshToken)
-    {
-        try
-        {
-            // Belirtilen refresh token'ı bul
-            var token = await _context.RefreshTokens
-                .FirstOrDefaultAsync(rt => rt.Token == refreshToken && !rt.IsRevoked && rt.Expires > DateTime.UtcNow);
-
-            if (token == null)
-            {
-                return false; // İptal edilecek token bulunamadı veya zaten iptal edilmiş
-            }
-
-            // Token'ı iptal et
-            token.IsRevoked = true;
-            _context.RefreshTokens.Update(token);
-            await _context.SaveChangesAsync();
-            
-            return true;
-        }
-        catch (Exception)
-        {
-            return false;
-        }
-    }
 
     // JWT token oluşturma işlemi
     private async Task<(string Token, DateTime Expires)> CreateToken(ApplicationUser user)

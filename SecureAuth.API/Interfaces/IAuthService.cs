@@ -24,6 +24,4 @@ public interface IAuthService
     // Kullanıcının tüm refresh token'larını iptal etme metodu
     Task<bool> RevokeAllUserRefreshTokens(string userId);
     
-    // Belirli bir refresh token'ı iptal etme metodu
-    Task<bool> RevokeRefreshToken(string refreshToken);
 }
