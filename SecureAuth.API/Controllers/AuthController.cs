@@ -85,15 +85,17 @@ namespace SecureAuth.API.Controllers
         //Kullanıcının sadece kendi oturumunu kapatma endpoint'i
         [Authorize]
         [HttpPost("logout")]
-        public async Task<ActionResult> Logout()
+        public async Task<ActionResult> Logout(LogoutRequest request)
         {
+            // Kullanıcı kimliğini kontrol et
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userId))
             {
                 return Unauthorized();
             }
 
-            var result = await _authService.RevokeAllUserRefreshTokens(userId);
+            // Belirtilen refresh token'ı iptal et
+            var result = await _authService.RevokeRefreshToken(request.RefreshToken);
             if (!result)
             {
                 return BadRequest("Oturum kapatma işlemi sırasında bir hata oluştu.");

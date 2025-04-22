@@ -146,7 +146,7 @@ public class AuthService : IAuthService
     }
 
     // Refresh token oluşturma
-    public async Task<RefreshToken> CreateRefreshToken(ApplicationUser user)
+    public Task<RefreshToken> CreateRefreshToken(ApplicationUser user)
     {
         // Rastgele bir token değeri oluştur
         var randomBytes = new byte[64];
@@ -171,7 +171,7 @@ public class AuthService : IAuthService
             UserId = user.Id
         };
 
-        return refreshTokenEntity;
+        return Task.FromResult(refreshTokenEntity);
     }
 
     // Refresh token'ı kullanıcıya atama
@@ -213,6 +213,33 @@ public class AuthService : IAuthService
             }
 
             _context.RefreshTokens.UpdateRange(userTokens);
+            await _context.SaveChangesAsync();
+            
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+    // Belirli bir refresh token'ı iptal etme
+    public async Task<bool> RevokeRefreshToken(string refreshToken)
+    {
+        try
+        {
+            // Belirtilen refresh token'ı bul
+            var token = await _context.RefreshTokens
+                .FirstOrDefaultAsync(rt => rt.Token == refreshToken && !rt.IsRevoked && rt.Expires > DateTime.UtcNow);
+
+            if (token == null)
+            {
+                return false; // İptal edilecek token bulunamadı veya zaten iptal edilmiş
+            }
+
+            // Token'ı iptal et
+            token.IsRevoked = true;
+            _context.RefreshTokens.Update(token);
             await _context.SaveChangesAsync();
             
             return true;
